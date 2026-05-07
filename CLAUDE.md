@@ -13,8 +13,14 @@ Claude Codeで作業を始めるとき、Claudeは必ず以下を確認する：
 2. **前回の作業はどこまで進んだか？**（未完了タスクの確認）
 3. **今日の作業はどのプロジェクトか？**（C:\dev\ 配下のどのフォルダか）
 4. **どちらのPCか？**（HomePC / ShopPC）
+5. **uds-sharedをpullしてCLAUDE.mdを最新化する**
+```bash
+   cd C:\dev\UDS\uds-shared
+   git pull origin main
+   copy "C:\dev\UDS\uds-shared\CLAUDE.md" "$env:USERPROFILE\.claude\CLAUDE.md"
+```
 
-> Claudeは武史さんが作業開始を宣言したら、上記4点を確認してから作業に入ること。
+> Claudeは武史さんが作業開始を宣言したら、上記5点を確認してから作業に入ること。
 
 ---
 
@@ -141,7 +147,7 @@ C:\dev
 ### 改善提案の仕方：
 1. 「CLAUDE.mdをこう変えると良くなりそうです」と提案する
 2. 武史さんがOKしたらCLAUDE.mdを更新する
-3. HomePCとShopPC両方に反映する
+3. `/sync-claude-md` で両PC・GitHubに反映する
 
 ---
 
@@ -164,7 +170,9 @@ C:\dev
 完了したこと：
 未完了・持ち越し：
 次回やること（1つだけ）：
-保存したファイル・場所：
+保存したファイル・場所:
+出力後、必ず `/sync-claude-md` を実行してCLAUDE.mdを同期する。
+
 ---
 
 *最終更新：2026-05-07*
