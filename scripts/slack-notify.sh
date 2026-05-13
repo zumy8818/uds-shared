@@ -1,5 +1,5 @@
 #!/bin/bash
-# Slackにメッセージを送るスクリプト
+# Slackにメッセージを送るスクリプト（複数行・日本語対応）
 # 使い方: ./slack-notify.sh "送りたいメッセージ"
 
 MESSAGE="$1"
@@ -14,13 +14,11 @@ if [ -z "$MESSAGE" ]; then
   exit 1
 fi
 
-# bash組み込みでダブルクォートをエスケープ
-ESCAPED="${MESSAGE//\"/\\\"}"
-
-# --data @- で標準入力からJSONを渡す（日本語文字化け対策）
-RESULT=$(echo "{\"text\":\"${ESCAPED}\"}" | curl -s -X POST "$SLACK_WEBHOOK_URL" \
-  -H 'Content-type: application/json; charset=utf-8' \
-  --data @-)
+# Node.jsでJSONを安全に生成（改行・日本語・特殊文字すべて対応）
+RESULT=$(node -e "process.stdout.write(JSON.stringify({text: process.argv[1]}));" "$MESSAGE" \
+  | curl -s -X POST "$SLACK_WEBHOOK_URL" \
+    -H 'Content-type: application/json' \
+    --data @-)
 
 if [ "$RESULT" = "ok" ]; then
   echo "✅ Slackに送信しました"
