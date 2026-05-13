@@ -164,17 +164,36 @@ C:\dev
 
 ## 9. セッション終了ルーティン
 
-作業を終えるとき、Claudeは以下を出力する：
-【本日の作業まとめ】
+作業を終えるとき、Claudeは以下を順番に実行する：
 
+### ① 本日のまとめを出力する
+```
+【本日の作業まとめ】
 完了したこと：
 未完了・持ち越し：
 次回やること（1つだけ）：
-保存したファイル・場所:
-出力後、必ず `/sync-claude-md` を実行してCLAUDE.mdを同期する。
+保存したファイル・場所：
+```
+
+### ② まとめをSlackに送信する（`/send-summary`）
+```bash
+bash /c/dev/UDS/uds-shared/scripts/slack-notify.sh "メッセージ"
+```
+
+### ③ CLAUDE.mdを同期する（`/sync-claude-md`）
 
 ---
 
-*最終更新：2026-05-07*
+## 10. git pushするときのルール
+
+git pushは必ず通知スクリプト経由で行う：
+```bash
+bash /c/dev/UDS/uds-shared/scripts/git-push-notify.sh origin main
+```
+→ push成功時に自動でSlack通知が飛ぶ（どのPCから・何をpushしたか）
+
+---
+
+*最終更新：2026-05-13*
 *ShopPC：C:\Users\owner\.claude\CLAUDE.md*
 *HomePC：C:\Users\scare\.claude\CLAUDE.md*
