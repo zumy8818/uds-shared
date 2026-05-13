@@ -1,32 +1,37 @@
 # 本日のまとめをSlackに送信するコマンド
 # 使い方：Claude Codeで `/send-summary` と入力
 
-セッション終了時に「本日のまとめ」をSlackに送信します。
+セッション終了時に、以下の3点セットでSlackにまとめを送信する。
+
+## Slack送信フォーマット（必須）
+
+```
+【表題】作業内容から分かりやすい名前（例：２PC連携、棚卸アプリ修正）
+【本日の作業内容】
+・完了：（完了したこと）
+・未完了：（持ち越しタスク）
+【引継ぎ → HomePC or ShopPC】
+・（もう一方のPCでやること・確認すること）
+```
 
 ## 手順
 
-1. 「本日の作業まとめ」を以下のフォーマットで作成する：
-```
-【本日の作業まとめ】
-完了したこと：
-未完了・持ち越し：
-次回やること（1つだけ）：
-保存したファイル・場所：
-```
+1. 上のフォーマットで本日のまとめ文章を作成する
+2. 以下のコマンドで送信する：
 
-2. 以下のスクリプトでSlackに送信する：
 ```bash
-bash /c/dev/UDS/uds-shared/scripts/slack-notify.sh "【本日の作業まとめ】
-完了したこと：（内容）
-未完了・持ち越し：（内容）
-次回やること：（内容）
-PC：ShopPC / $(date '+%Y-%m-%d %H:%M')"
+bash /c/dev/UDS/uds-shared/scripts/slack-notify.sh "【表題】２PC連携
+【本日の作業内容】
+・完了：（内容）
+・未完了：（内容）
+【引継ぎ → HomePC】
+・（内容）"
 ```
 
-3. 「✅ Slackに送信しました」が表示されたら完了
-
-4. 続けて `/sync-claude-md` を実行してCLAUDE.mdを同期する
+3. 「✅ Slackに送信しました」を確認
+4. 続けて `/sync-claude-md` を実行
 
 ## 注意
-- SLACK_WEBHOOK_URLが設定されていない場合はエラーになる
-- HomePCでも同じ手順（settings.local.jsonにWebhook URLが必要）
+- 表題は毎回その日の作業にあわせた名前にすること
+- 引継ぎ先はその日作業したPCの逆（ShopPCで作業→「→ HomePC」）
+- SLACK_WEBHOOK_URLが未設定の場合はsettings.local.jsonを確認
