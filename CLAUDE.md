@@ -190,7 +190,38 @@ bash /c/dev/UDS/uds-shared/scripts/slack-notify.sh "メッセージ"
 
 ---
 
-## 10. git pushするときのルール
+## 10. UDS会社情報（連絡先）
+
+各種資料・チラシ・Webサイト等で使い回す公式連絡先情報。
+
+| 項目 | 内容 |
+|---|---|
+| 会社名 | うぶやまデジタルサービス（UDS） |
+| Tel | 090-8959-9993 |
+| e-mail | info@ubuyama-digital-service.com |
+| URL | https://ubuyama-digital-service.com |
+
+> チラシ・LP・名刺・Webサイト等を制作する際は必ずこの情報を使用する。
+
+---
+
+## 11. Web開発時のSEO対策ルール
+
+Webサイトを構築する際は、Google アナリティクスの最新情報に基づき最良のSEO対策を行うこと。
+
+### 実施すべき主なSEO対策：
+- メタタグ（title・description）の適切な設定
+- OGP（Open Graph Protocol）タグの設定
+- 構造化データ（Schema.org）の実装
+- Core Web Vitals（LCP・FID・CLS）の最適化
+- モバイルファーストデザイン
+- 画像のalt属性・WebP対応・遅延読み込み
+- Google Analytics / Search Console の設置
+- サイトマップ（sitemap.xml）・robots.txt の設置
+
+---
+
+## 12. git pushするときのルール
 
 git pushは必ず通知スクリプト経由で行う：
 ```bash
@@ -200,6 +231,6 @@ bash /c/dev/UDS/uds-shared/scripts/git-push-notify.sh origin main
 
 ---
 
-*最終更新：2026-05-13*
+*最終更新：2026-05-27*
 *ShopPC：C:\Users\owner\.claude\CLAUDE.md*
 *HomePC：C:\Users\scare\.claude\CLAUDE.md*
