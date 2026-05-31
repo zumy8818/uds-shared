@@ -20,7 +20,7 @@
 2. 以下のコマンドで送信する：
 
 ```bash
-bash "/c/dev/coo/スキル・ルール/uds-shared/scripts/slack-notify.sh" "【表題】２PC連携
+bash "/c/coo/スキル・ルール/uds-shared/scripts/slack-notify.sh" "【表題】２PC連携
 【本日の作業内容】
 ・完了：（内容）
 ・未完了：（内容）

@@ -15,9 +15,9 @@ Claude Codeで作業を始めるとき、Claudeは必ず以下を確認する：
 4. **どちらのPCか？**（HomePC / ShopPC）
 5. **uds-sharedをpullしてCLAUDE.mdを最新化する**
 ```bash
-   cd "C:\dev\coo\スキル・ルール\uds-shared"
+   cd "C:\coo\スキル・ルール\uds-shared"
    git pull origin main
-   copy "C:\dev\coo\スキル・ルール\uds-shared\CLAUDE.md" "$env:USERPROFILE\.claude\CLAUDE.md"
+   copy "C:\coo\スキル・ルール\uds-shared\CLAUDE.md" "$env:USERPROFILE\.claude\CLAUDE.md"
 ```
 
 > Claudeは武史さんが作業開始を宣言したら、上記5点を確認してから作業に入ること。
@@ -37,11 +37,11 @@ Claude Codeで作業を始めるとき、Claudeは必ず以下を確認する：
 
 ## 3. ファイル・フォルダ管理ルール
 
-> ⚠️ **【最重要ルール】全作業は `C:\dev\coo\` 配下で行う。**
+> ⚠️ **【最重要ルール】全作業は `C:\coo\` 配下で行う。**
 > `C:\dev\clients\`・`C:\dev\internal\`・`C:\dev\UDS\` などの旧フォルダは使用しない。
-> フォルダの配置・管理ルールは `C:\dev\coo\` の構造に従うこと。
+> フォルダの配置・管理ルールは `C:\coo\` の構造に従うこと。
 
-### coo フォルダ構造（C:\dev\coo\ 配下）
+### coo フォルダ構造（C:\coo\ 配下）
 C:\dev\coo
 ├── クライアント管理\
 │   ├── 01_見積中\         ← 見込み・商談中案件
@@ -65,7 +65,7 @@ C:\dev\coo
 - 全リポジトリはPrivateで管理
 
 ### 「ファイルが見つからない」を防ぐルール
-1. 作業ファイルは必ず `C:\dev\coo\[該当フォルダ]\` の中に置く
+1. 作業ファイルは必ず `C:\coo\[該当フォルダ]\` の中に置く
 2. デスクトップ・ダウンロードフォルダへの一時保存は禁止
 3. 作業終了時に「どこに何を保存したか」をClaude Codeに記録させる
 
@@ -184,7 +184,7 @@ Slackに送る内容は必ず以下の3点セットにする：
 
 送信コマンド：
 ```bash
-bash "/c/dev/coo/スキル・ルール/uds-shared/scripts/slack-notify.sh" "メッセージ"
+bash "/c/coo/スキル・ルール/uds-shared/scripts/slack-notify.sh" "メッセージ"
 ```
 
 ### ② CLAUDE.mdを同期する（`/sync-claude-md`）
@@ -226,7 +226,7 @@ Webサイトを構築する際は、Google アナリティクスの最新情報�
 
 git pushは必ず通知スクリプト経由で行う：
 ```bash
-bash "/c/dev/coo/スキル・ルール/uds-shared/scripts/git-push-notify.sh" origin main
+bash "/c/coo/スキル・ルール/uds-shared/scripts/git-push-notify.sh" origin main
 ```
 → push成功時に自動でSlack通知が飛ぶ（どのPCから・何をpushしたか）
 
