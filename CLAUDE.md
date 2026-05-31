@@ -15,9 +15,9 @@ Claude Codeで作業を始めるとき、Claudeは必ず以下を確認する：
 4. **どちらのPCか？**（HomePC / ShopPC）
 5. **uds-sharedをpullしてCLAUDE.mdを最新化する**
 ```bash
-   cd C:\dev\UDS\uds-shared
+   cd "C:\dev\coo\スキル・ルール\uds-shared"
    git pull origin main
-   copy "C:\dev\UDS\uds-shared\CLAUDE.md" "$env:USERPROFILE\.claude\CLAUDE.md"
+   copy "C:\dev\coo\スキル・ルール\uds-shared\CLAUDE.md" "$env:USERPROFILE\.claude\CLAUDE.md"
 ```
 
 > Claudeは武史さんが作業開始を宣言したら、上記5点を確認してから作業に入ること。
@@ -184,7 +184,7 @@ Slackに送る内容は必ず以下の3点セットにする：
 
 送信コマンド：
 ```bash
-bash /c/dev/UDS/uds-shared/scripts/slack-notify.sh "メッセージ"
+bash "/c/dev/coo/スキル・ルール/uds-shared/scripts/slack-notify.sh" "メッセージ"
 ```
 
 ### ② CLAUDE.mdを同期する（`/sync-claude-md`）
@@ -226,7 +226,7 @@ Webサイトを構築する際は、Google アナリティクスの最新情報�
 
 git pushは必ず通知スクリプト経由で行う：
 ```bash
-bash /c/dev/UDS/uds-shared/scripts/git-push-notify.sh origin main
+bash "/c/dev/coo/スキル・ルール/uds-shared/scripts/git-push-notify.sh" origin main
 ```
 → push成功時に自動でSlack通知が飛ぶ（どのPCから・何をpushしたか）
 

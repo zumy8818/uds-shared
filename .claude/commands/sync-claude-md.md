@@ -7,12 +7,12 @@
 
 1. `~\.claude\CLAUDE.md` を `uds-shared` にコピーする
 ```bash
-copy "$env:USERPROFILE\.claude\CLAUDE.md" "C:\dev\UDS\uds-shared\CLAUDE.md"
+copy "$env:USERPROFILE\.claude\CLAUDE.md" "C:\dev\coo\スキル・ルール\uds-shared\CLAUDE.md"
 ```
 
 2. GitHubにpushする
 ```bash
-cd C:\dev\UDS\uds-shared
+cd C:\dev\coo\スキル・ルール\uds-shared
 git add CLAUDE.md
 git commit -m "update: CLAUDE.md同期 $(Get-Date -Format 'yyyy-MM-dd')"
 git push origin main
