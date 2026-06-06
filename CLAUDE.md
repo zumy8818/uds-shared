@@ -247,6 +247,19 @@ bash "/c/coo/スキル・ルール/uds-shared/scripts/git-push-notify.sh" origin
 
 ---
 
-*最終更新：2026-05-27*
+## 13. SSD-PUTA への同期ルール
+
+作業後はSSD-PUTAの `coo` フォルダにも `git pull` で同期する。
+ただし、SSD-PUTAはドライブレターが毎回変わる可能性がある（D:\ / E:\ / F:\ 等）。
+
+### 同期手順
+1. `Get-PSDrive -PSProvider FileSystem` でドライブ一覧を確認
+2. 各ドライブに `coo` フォルダがあるか探す
+3. 見つかった場合：`cd [ドライブ]:\coo` → `git pull origin main`
+4. **見つからない場合は「今日はSSD-PUTAのcooフォルダはどこにありますか？」と武史さんに確認する**
+
+---
+
+*最終更新：2026-06-06*
 *ShopPC：C:\Users\owner\.claude\CLAUDE.md*
 *HomePC：C:\Users\scare\.claude\CLAUDE.md*
