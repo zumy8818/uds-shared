@@ -19,8 +19,9 @@ Claude Codeで作業を始めるとき、Claudeは必ず以下を確認する：
    git pull origin main
    copy "C:\coo\スキル・ルール\uds-shared\CLAUDE.md" "$env:USERPROFILE\.claude\CLAUDE.md"
 ```
+6. **`C:\coo\.env` を確認し、作業に必要なキーが揃っているか確認する**（→ 詳細は「14. .env管理ルール」参照）
 
-> Claudeは武史さんが作業開始を宣言したら、上記5点を確認してから作業に入ること。
+> Claudeは武史さんが作業開始を宣言したら、上記6点を確認してから作業に入ること。
 
 ---
 
@@ -260,6 +261,64 @@ bash "/c/coo/スキル・ルール/uds-shared/scripts/git-push-notify.sh" origin
 
 ---
 
-*最終更新：2026-06-06*
+## 14. .env 管理ルール（APIキー・認証情報の一元管理）
+
+### 基本方針
+- **全プロジェクト共通の認証情報は `C:\coo\.env` だけで管理する**
+- プロジェクト固有のキーもここに追記していく（後から移動しない）
+- `.env` は絶対にGitにコミットしない
+
+### Claudeが作業開始時にやること
+
+1. `C:\coo\.env` を読み込む
+2. 今日の作業に必要なキーが揃っているか確認する
+3. **不足しているキーがあれば、作業に入る前に武史さんに請求する**
+
+例：
+```
+以下のキーが .env に見当たりません。教えていただければ追加します：
+- STRIPE_API_KEY（決済機能に必要）
+- NOTION_TOKEN（Notion連携に必要）
+```
+
+4. 武史さんから受け取ったら、即座に `.env` に追記する：
+
+```powershell
+# 追記フォーマット（末尾に追加）
+# --- [サービス名] ---
+# KEYNAME=value
+```
+
+### Claudeが .env に書き込む際のルール
+
+- 既存のキーは上書きしない（変更が必要なときは武史さんに確認してから）
+- カテゴリコメント（`# --- Xxx ---`）を付けて整理する
+- 追記後に「`C:\coo\.env` に追加しました」と報告する
+
+### GitHub Secrets との同期
+
+`.env` に追加・変更があったら、影響するリポジトリに対して同期コマンドを実行する：
+
+```bash
+bash "/c/coo/スキル・ルール/uds-shared/scripts/sync-gh-secrets.sh" "zumy8818/リポジトリ名"
+```
+
+### 現在管理しているキー一覧（カテゴリ）
+
+| カテゴリ | キー prefix |
+|---|---|
+| Lolipop MySQL | `LOLIPOP_DB_*` |
+| Lolipop FTP | `LOLIPOP_FTP_*` |
+| Lolipop SSH | `LOLIPOP_SSH_*` |
+| Lolipop PHP API | `LOLIPOP_API_*` |
+| VPS（さくら） | `VPS_*` |
+| Claude / Anthropic | `ANTHROPIC_API_KEY` |
+| OpenAI | `OPENAI_API_KEY` |
+| Google Maps | `GOOGLE_MAPS_API_KEY` |
+| GitHub Actions | `GH_ACTIONS_TOKEN` |
+
+---
+
+*最終更新：2026-06-10*
 *ShopPC：C:\Users\owner\.claude\CLAUDE.md*
 *HomePC：C:\Users\scare\.claude\CLAUDE.md*
