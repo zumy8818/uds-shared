@@ -479,6 +479,42 @@ gh secret set SLACK_WEBHOOK_URL --body "(.env の SLACK_WEBHOOK_URL)"
 
 ---
 
+## 14.3 新URL作成時のダッシュボード自動登録ルール
+
+**新しく本番URL（サブディレクトリ・独自ドメイン・デモサイト問わず）を作成した際は、必ずサイト管理ダッシュボード（`https://ubuyama-digital-service.com/sites/`）にも登録する。**
+台帳データの実体は `コンテンツ制作/web/uds-website` リポジトリの `sites/sites.json`。
+
+### 登録するタイミング
+- クライアント案件のサイトを新規公開したとき
+- UDS自社の新しいLP・キャンペーンページを`ubuyama-digital-service.com`配下に追加したとき
+- MEOキャンペーン等の自動生成パイプラインで新しいデモサイトが生成されたとき（→こちらは`uds-web-demos`の`demo-generate.yml`に自動登録ステップを組み込み済み。手動対応は不要）
+- それ以外（Claudeが手作業でサイトを新規公開した場合）は、**Claudeがpushと同じタイミングで`sites.json`も更新してpushすること**（武史さんに聞かれてから、ではなく自発的に行う）
+
+### sites.json のスキーマ（1エントリあたり）
+```json
+{
+  "id": "一意なスラッグ（フォルダ名・デモslug等）",
+  "label": "表示名（クライアント名・サービス名）",
+  "domain": "表示用ドメイン",
+  "url": "https://.../ （末尾スラッシュ必須）",
+  "repo": "zumy8818/リポジトリ名",
+  "server_path": "~/web/... （サーバー上の配置パス）",
+  "site_type": "手動構築 / ECサイト / MEOキャンペーン デモ 等",
+  "branch": "main",
+  "pages": [ { "nameJa": "トップ", "dir": "", "nameEn": "TOP" } ],
+  "status": "active"
+}
+```
+- 既存のドメイン配下にサブページを追加する場合（例：`ubuyama-digital-service.com`配下に新しいLP）は、**新規エントリを作らず既存ドメインの `pages` 配列に追記する**
+- 別ドメイン・別リポジトリの新規サイトは、新しいエントリを追加する
+- 同じ`id`が既にある場合は上書き（重複登録しない）
+
+### 実装上の注意（ハマったポイント）
+- `sites.json` は過去にPowerShellで生成されたためUTF-8 BOM付きだった。**Node.jsの`JSON.parse`はBOMを自動で除去しないため`SyntaxError`になる。** 読み込み時は先頭が`﻿`なら取り除いてからparseすること（ブラウザの`fetch().json()`はBOMを許容するため気づきにくい）
+- 更新後は`sites/sites.json`をcommit&pushする（`uds-website`リポジトリの`deploy.yml`が自動でロリポップ本番にデプロイする）
+
+---
+
 ## 15. クライアントSNS運用ルール
 
 UDSがクライアントのSNS（Facebook・Instagram等）を制作・運用する際の体制ルール。
