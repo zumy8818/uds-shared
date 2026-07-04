@@ -1,4 +1,4 @@
-﻿# CLAUDE.md — うぶやまデジタルサービス（UDS）作業ルール
+# CLAUDE.md — うぶやまデジタルサービス（UDS）作業ルール
 
 > このファイルはClaude Codeが自動で読み込む「武史さんとClaudeの共通ルール集」です。
 > 作業の質と継続性を高めるために、セッションのたびに参照します。
@@ -166,6 +166,24 @@ C:\coo
 
 ---
 
+## 6.5 プロジェクトごとのコンテキスト管理ルール（重要）
+
+`C:\coo\` および `E:\coo\` 配下の各プロジェクトフォルダには、そのプロジェクト専用の `CLAUDE.md` を置く。Claude Codeはそのフォルダで作業を始めると自動でそのCLAUDE.mdを読み込むため、プロジェクト固有のコンテキスト（環境・起動方法・注意事項・関連ファイル）はそこに蓄積する。
+
+### ルール
+- 新しいプロジェクトフォルダを作るときは、必ず `CLAUDE.md` を作成する
+- グローバルな `~/.claude/CLAUDE.md` には**全プロジェクト共通のルール**だけ書く
+- プロジェクト固有の情報（ソフトのバージョン・起動コマンド・トラブル対処メモ等）は**そのプロジェクトのCLAUDE.md**に書く
+- 作業中に「これは将来も役立つ」と気づいた情報は、その場でプロジェクトCLAUDE.mdに追記する
+- インストール記録・操作手順などの長い文書は別ファイル（例：`Forge_インストール記録.md`）にして、CLAUDE.mdからリンクする
+
+### テンプレート構成
+```
+プロジェクト概要 / 環境 / 起動方法 / 重要メモ / 関連ファイル / 作業ルール
+```
+
+---
+
 ## 7. CLAUDE.md継続改善ルール
 
 作業を通じて「今までよりこちらの方が良い」「効率が上がった」と気づいたことがあれば、Claudeは積極的にCLAUDE.mdの改善を提案する。
@@ -270,6 +288,56 @@ bash "/c/coo/スキル・ルール/uds-shared/scripts/git-push-notify.sh" origin
 
 ---
 
+## 13.5 Webアプリのデプロイ標準パターン（ロリポップPHP/MySQL）
+
+UDSのWebアプリは原則として以下の構成でデプロイ自動化する。
+**雛形リポジトリ**：`C:\coo\経理\adiyoshi-trade-manager`
+
+### 構成3点セット
+1. **GitHub Actions**（主経路）：`.github/workflows/deploy.yml` で `git push` → 自動デプロイ
+2. **ローカル PowerShell**（副経路）：`scripts/deploy.ps1` でWinSCP経由デプロイ
+3. **階層型 .env**：`C:\coo\.env`（共通）+ プロジェクト `.env`（固有）を自動マージ
+
+### Single Source of Truth
+**`.env` だけ埋めれば全部動く** ようになっている：
+- `.env` → ローカルデプロイ（deploy.ps1）
+- `.env` → GitHub Secrets（Sync-Secrets.ps1 で自動同期）
+- `.env` → config.local.php（Build-Config.ps1 で自動生成）
+
+### Claudeのデプロイ運用ルール（共通）
+- **デプロイ作業時は必ず `.env` を参照する**（`C:\coo\.env` ＋ プロジェクト `.env`）
+  - 接続先・認証情報・DB情報は `.env` に集約済み
+  - 武史さんに「ホストは？」「パスワードは？」を**聞かない**（.envで足りるはず）
+  - `.env` に無い情報があった時 **だけ** ユーザーに確認
+- ユーザーが「デプロイして」と言ったら、**実行前に必ず確認** を取る
+- `git status` / `git diff` で変更内容を提示してから `git push` 提案
+- `.env` の値をチャットに出さない（読むだけならOK、ユーザーに見せる時はマスク）
+- 設定変更 (`.env` 編集) のあとは `Sync-Secrets.ps1` の実行も忘れずに提案
+
+### 新規プロジェクト作成時
+ADIYOSHIリポを雛形にコピーし、以下を書き換える：
+- プロジェクト名（`adiyoshi-trade-manager` → 新名）
+- `.env.example` の `SFTP_REMOTE_PATH` と `DB_NAME`
+- `deploy.yml` のSlack通知メッセージ
+
+### Lolipop の制約（重要・全PHPプロジェクト共通）
+- **PATCH / DELETE / PUT メソッドは WAF に遮断される**（「不正なパラメーター」HTMLが返る）
+- **REST APIの更新系は最初から `POST + ?action=update_sold` 形式で書く**
+  ```
+  GET    /api/foo.php              ← 一覧
+  POST   /api/foo.php              ← 新規作成 (action省略 or action=create)
+  POST   /api/foo.php?action=update_xxx  ← 更新
+  POST   /api/foo.php?action=delete      ← 削除
+  ```
+- 共有レンタル系（ロリポップ、エックスサーバー、さくら等）でPHPを書く時は同じ前提で。
+
+### HTML/CSSの落とし穴（学んだバグ）
+- HTML5 `hidden` 属性は `display: none` をUAスタイルで適用するだけ
+- 後続のCSS `.modal { display: grid }` のような同等specificityルールに **負ける**
+- → CSSの最後に `[hidden] { display: none !important; }` を必ず入れる
+
+---
+
 ## 14. .env 管理ルール（APIキー・認証情報の一元管理）
 
 ### 基本方針
@@ -326,6 +394,88 @@ bash "/c/coo/スキル・ルール/uds-shared/scripts/sync-gh-secrets.sh" "zumy8
 | Google Maps | `GOOGLE_MAPS_API_KEY` |
 | GitHub Actions | `GH_ACTIONS_TOKEN` |
 | Facebook（クライアントSNS） | `FB_*` |
+
+---
+
+## 14.1 UDSサイト内のLP（ランディングページ）URL命名ルール
+
+クライアント案件・自社プロダクトのLPは、すべて **UDSサイトの `/lp/` 配下** にまとめる。
+将来的にこの配下を「UDS制作LPポートフォリオ」として索引化することを前提とした統一ルール。
+
+### 確定URLパターン
+```
+https://ubuyama-digital-service.com/lp/[client-slug]/
+```
+
+| 例 | クライアント | URL |
+|---|---|---|
+| ADIYOSHI工房 | 木工房 | https://ubuyama-digital-service.com/lp/adiyoshi-koubou/ |
+| 今後のLP | 任意 | https://ubuyama-digital-service.com/lp/[kebab-case-slug]/ |
+
+### ルール
+- **slug**：英小文字＋ハイフンの kebab-case（例：`adiyoshi-koubou`、`fourseasons-cafe`）
+- **必ず末尾スラッシュ**：`/lp/adiyoshi-koubou/` （ロリポップでもディレクトリ扱いを明示）
+- **取引管理・パートナーログイン系の `/partners/` とは別系統**：
+  - `/partners/[name]/` …… ログイン・取引管理アプリ
+  - `/lp/[name]/`       …… お客様向けブランド／ランディングページ
+- **`/lp/` のトップページ**：将来UDSのLPポートフォリオとして自動索引化（未着手・要TODO）
+
+### 新しいLPを作るときの手順
+1. `C:\coo\クライアント管理\01_見積中\[client]-lp\` にプロジェクト作成
+2. プロジェクトCLAUDE.mdに「LP本番URL：https://ubuyama-digital-service.com/lp/[slug]/」を明記
+3. index.html の OGP・canonical・構造化データを上記URLで設定
+4. **GitHub Privateリポジトリも同時に作成**（後述 §14.2 参照）
+5. 正式受注後 → `02_契約済み\` に移動 → デプロイ
+
+---
+
+## 14.2 新URL作成時のGitHubリポジトリ運用ルール
+
+`/lp/[slug]/` のような新URLを作成する時は、**必ずGitHub Privateリポジトリも同時に作成**する。
+これにより GitHub Actions 自動デプロイ・履歴管理・拠点間同期が一発で揃う。
+
+### リポジトリ命名
+| 種別 | リポジトリ名 | 例 |
+|---|---|---|
+| クライアントLP | `zumy8818/[client-slug]-lp` | `zumy8818/adiyoshi-koubou-lp` |
+| 取引・管理アプリ | `zumy8818/[client-slug]-[purpose]` | `zumy8818/adiyoshi-trade-manager` |
+
+### 作成コマンド（標準手順）
+```powershell
+# 1. プロジェクトフォルダで git init
+cd "C:\coo\クライアント管理\01_見積中\[client]-lp"
+git init -b main
+
+# 2. GitHub Privateリポジトリを作成（gh CLI使用）
+gh repo create zumy8818/[client]-lp --private --source . --remote origin
+
+# 3. .gitignore でセンシティブ情報を除外（.env など）
+# 4. 初回コミット → push
+git add -A
+git commit -m "feat: initial commit"
+git push -u origin main
+
+# 5. .github/workflows/deploy.yml を作成（adiyoshi-koubou-lp が雛形）
+# 6. GitHub Secrets を .env から同期
+gh secret set SSH_PRIVATE_KEY < "$env:USERPROFILE\.ssh\lolipop_adiyoshi"
+gh secret set SFTP_HOST       --body "ssh.lolipop.jp"
+gh secret set SFTP_USER       --body "(.env の LOLIPOP_SSH_USER)"
+gh secret set SFTP_PORT       --body "2222"
+gh secret set SFTP_REMOTE_PATH --body "web/ubuyama-digital-service.com/lp/[slug]"
+gh secret set SLACK_WEBHOOK_URL --body "(.env の SLACK_WEBHOOK_URL)"
+```
+
+### 既存 coo monorepo との関係
+- 各プロジェクトは **coo monorepoから独立した別リポジトリ**として運用する
+- coo の `.gitignore` に該当パスを追加して二重管理を避ける
+- 例：`クライアント管理/01_見積中/adiyoshi-koubou-lp/`
+- coo 配下の他PC（E:\coo）に同期する時は、coo の pull とは別に **各プロジェクトを個別に git clone** する
+
+### 雛形プロジェクト
+- **静的LP**：`C:\coo\クライアント管理\01_見積中\adiyoshi-koubou-lp\`
+  （OpenSSH/SFTPベース、PHP/MySQL不要）
+- **PHP+MySQLアプリ**：`C:\coo\経理\adiyoshi-trade-manager\`
+  （rsync over SSH、config.local.php自動生成）
 
 ---
 
@@ -445,6 +595,52 @@ Claudeは**推測で答えてはいけない**。以下を必ず確認してか�
 
 ---
 
-*最終更新：2026-06-28*
+## 18. モデル使い分けルール（Sonnet 5 基本 / Fable 5 切り替え提案）
+
+### 基本方針
+
+**基本は Sonnet 5（`claude-sonnet-5`）、複雑な判断が必要なタスクだけ Fable 5（`claude-fable-5`）。**
+
+判断基準は1つ：**「手順が決まっている作業」→ Sonnet 5、「考えて判断する作業」→ Fable 5**
+Claudeが「これは複雑な判断が必要」と判断したら、Fable 5への切り替えを提案する。
+
+### モデル振り分けマップ
+
+```
+🟢 Sonnet 5（基本・これで作業）
+  ・/send-summary（Slack日報送信）
+  ・/sync-claude-md（CLAUDE.md同期）
+  ・git操作・デプロイ実行
+  ・軽い修正・typo直し・ファイル確認/移動
+  ・.env追記・GitHub Secrets同期
+  ・通常のコーディング全般
+
+🔵 Fable 5（Claudeが切り替えを提案する場面）
+  ・LP/Webサイトの新規設計・構成案
+  ・複数ファイルにまたがる大規模実装・リファクタ
+  ・原因不明バグの多角的調査
+  ・/memory-dream（全設定の矛盾検出）
+  ・ヒアリングシート分析 → 提案書作成
+```
+
+### Claudeの切り替え提案ルール
+
+- Fable 5向きのタスクに入ると判断したら、作業前に以下の形で提案する：
+  ```
+  💡 この作業は設計・分析が重いのでFable 5をおすすめします。
+     切り替える場合 → /model claude-fable-5
+     このままSonnet 5で進めることもできます。どうしますか？
+  ```
+- 重い作業が終わったら「Sonnet 5に戻しましょう → `/model claude-sonnet-5`」と促す
+- 武史さんが指定した場合はそれに従う（提案の押し付けはしない）
+
+### 参考
+
+- `/fable5` … Fable 5のUDS向け活用ガイド
+- セーフガード：セッションの95%以上では発動しない。発動時はOpus 4.8へ自動振り替え
+
+---
+
+*最終更新：2026-07-03（HomePC/ShopPC/uds-sharedの3系統に分岐していたCLAUDE.mdを統合）*
 *ShopPC：C:\Users\owner\.claude\CLAUDE.md*
 *HomePC：C:\Users\scare\.claude\CLAUDE.md*
