@@ -481,14 +481,15 @@ gh secret set SLACK_WEBHOOK_URL --body "(.env の SLACK_WEBHOOK_URL)"
 
 ## 14.3 新URL作成時のダッシュボード自動登録ルール
 
-**新しく本番URL（サブディレクトリ・独自ドメイン・デモサイト問わず）を作成した際は、必ずサイト管理ダッシュボード（`https://ubuyama-digital-service.com/sites/`）にも登録する。**
+**新しく本番URLを作成した際は、必ずサイト管理ダッシュボード（`https://ubuyama-digital-service.com/sites/`）にも登録する。**
+**「新しいURL」には独自ドメインの新規サイトだけでなく、既存ドメイン配下の新しいサブディレクトリ（例：`ubuyama-digital-service.com/meo-campaign/`、`/cafestandfourseason/`のような追加ページ）も含む。** 「別リポジトリを作るような大きな新サイトだけが対象」という誤解をしないこと——サブディレクトリ1つ追加しただけでも対象。
 台帳データの実体は `コンテンツ制作/web/uds-website` リポジトリの `sites/sites.json`。
 
 ### 登録するタイミング
-- クライアント案件のサイトを新規公開したとき
-- UDS自社の新しいLP・キャンペーンページを`ubuyama-digital-service.com`配下に追加したとき
+- クライアント案件のサイトを新規公開したとき（独自ドメインでも、サブディレクトリでも）
+- UDS自社の新しいLP・キャンペーンページを`ubuyama-digital-service.com`配下にサブディレクトリとして追加したとき（★このパターンを見落としやすいので特に注意）
 - MEOキャンペーン等の自動生成パイプラインで新しいデモサイトが生成されたとき（→こちらは`uds-web-demos`の`demo-generate.yml`に自動登録ステップを組み込み済み。手動対応は不要）
-- それ以外（Claudeが手作業でサイトを新規公開した場合）は、**Claudeがpushと同じタイミングで`sites.json`も更新してpushすること**（武史さんに聞かれてから、ではなく自発的に行う）
+- それ以外（Claudeが手作業でサイトやサブディレクトリを新規公開した場合）は、**Claudeがpushと同じタイミングで`sites.json`も更新してpushすること**（武史さんに聞かれてから、ではなく自発的に行う）
 
 ### sites.json のスキーマ（1エントリあたり）
 ```json
