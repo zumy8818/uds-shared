@@ -632,6 +632,14 @@ Claudeが「これは複雑な判断が必要」と判断したら、Fable 5へ�
 
 ---
 
-*最終更新：2026-07-03（HomePC/ShopPC/uds-sharedの3系統に分岐していたCLAUDE.mdを統合）*
+## 19. 資料作成ルール（PowerPoint / pptx）
+
+- **12pt未満の文字サイズは使用しない**（本文・注釈・脚注も含めすべての文字要素）
+- 会場のスクリーン・オンライン共有どちらでも視認性を確保するための最低ライン
+- 表内の文字・図版内キャプションなど、小さくしたくなる箇所ほど注意する
+
+---
+
+*最終更新：2026-07-05（PowerPoint資料作成ルールを追加）*
 *ShopPC：C:\Users\owner\.claude\CLAUDE.md*
 *HomePC：C:\Users\scare\.claude\CLAUDE.md*
