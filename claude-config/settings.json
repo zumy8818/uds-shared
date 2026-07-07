@@ -1,0 +1,12 @@
+{
+  "theme": "light",
+  "mcpServers": {
+    "openai-image": {
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": ["C:\\dev\\internal\\dev\\tools\\openai-image-mcp\\index.js"],
+      "env": {
+        "IMAGE_OUTPUT_DIR": "C:\\Users\\owner\\Pictures\\openai-images"
+      }
+    }
+  }
+}
